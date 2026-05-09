@@ -12,9 +12,7 @@ class TaskFlowApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'TaskFlow',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: const HomePage(),
     );
   }
@@ -28,15 +26,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> tasks = [
-    'Learn Flutter',
-    'Build UI',
-    'Push project to GitHub',
+  List<Map<String, dynamic>> tasks = [
+    {'title': 'Learn Flutter', 'done': false},
+    {'title': 'Go To Gym', 'done': true},
   ];
-
-  void addTask() {
+  void toggleTask(int index) {
     setState(() {
-      tasks.add('New Task');
+      tasks[index]['done'] = !tasks[index]['done'];
     });
   }
 
@@ -49,37 +45,34 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('TaskFlow'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text('TaskFlow 🚀'), centerTitle: true),
       body: ListView.builder(
         itemCount: tasks.length,
         itemBuilder: (context, index) {
-          return Card(
-            margin: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 6,
+          return ListTile(
+            leading: Checkbox(
+              value: tasks[index]['done'],
+              onChanged: (_) {
+                toggleTask(index);
+              },
             ),
-            child: ListTile(
-              leading: const Icon(Icons.check_circle_outline),
-              title: Text(tasks[index]),
-              trailing: IconButton(
-                onPressed: () {
-                  deleteTask(index);
-                },
-                icon: const Icon(
-                  Icons.delete,
-                  color: Colors.red,
-                ),
+            title: Text(
+              tasks[index]['title'],
+              style: TextStyle(
+                fontSize: 20,
+                decoration: tasks[index]['done']
+                    ? TextDecoration.lineThrough
+                    : null,
               ),
+            ),
+            trailing: IconButton(
+              icon: Icon(Icons.delete, color: Colors.red),
+              onPressed: () {
+                deleteTask(index);
+              },
             ),
           );
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: addTask,
-        child: const Icon(Icons.add),
       ),
     );
   }
